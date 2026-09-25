@@ -3,35 +3,35 @@ package main
 import "fmt"
 
 func main() {
-	var first_number, second_number int
-	var mathematical_operation string
+	var firstNumber, secondNumber int
+	var mathematicalOperation string
 
-	if _, err := fmt.Scan(&first_number); err != nil {
+	if _, err := fmt.Scan(&firstNumber); err != nil {
 		fmt.Println("Invalid first operand")
 		return
 	}
-	if _, err := fmt.Scan(&second_number); err != nil {
+	if _, err := fmt.Scan(&secondNumber); err != nil {
 		fmt.Println("Invalid second operand")
 		return
 	}
-	if _, err := fmt.Scan(&mathematical_operation); err != nil {
+	if _, err := fmt.Scan(&mathematicalOperation); err != nil {
 		fmt.Println("Invalid operation")
 		return
 	}
 
-	switch mathematical_operation {
+	switch mathematicalOperation {
 	case "+":
-		fmt.Println(first_number + second_number)
+		fmt.Println(firstNumber + secondNumber)
 	case "-":
-		fmt.Println(first_number - second_number)
+		fmt.Println(firstNumber - secondNumber)
 	case "*":
-		fmt.Println(first_number * second_number)
+		fmt.Println(firstNumber * secondNumber)
 	case "/":
-		if second_number == 0 {
+		if secondNumber == 0 {
 			fmt.Println("Division by zero")
 			return
 		}
-		fmt.Println(first_number / second_number)
+		fmt.Println(firstNumber / secondNumber)
 	default:
 		fmt.Println("Invalid operation")
 	}
