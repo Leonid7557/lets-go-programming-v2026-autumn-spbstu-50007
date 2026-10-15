@@ -12,18 +12,21 @@ func processRoom() {
 
 	if _, err := fmt.Scan(&staffCount); err != nil {
 		fmt.Println("Invalid input")
+
 		return
 	}
 
 	currentMin := minAllowedTemp
 	currentMax := maxAllowedTemp
 
-	for i := 0; i < staffCount; i++ {
+	for range staffCount {
 		var sign string
+
 		var temp int
 
 		if _, err := fmt.Scan(&sign, &temp); err != nil {
 			fmt.Println("Invalid input")
+
 			return
 		}
 
@@ -38,6 +41,7 @@ func processRoom() {
 			}
 		default:
 			fmt.Println("Invalid operator")
+
 			return
 		}
 
@@ -54,10 +58,11 @@ func main() {
 
 	if _, err := fmt.Scan(&roomsCount); err != nil {
 		fmt.Println("Invalid input")
+
 		return
 	}
 
-	for i := 0; i < roomsCount; i++ {
+	for range roomsCount {
 		processRoom()
 	}
 }
