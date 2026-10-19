@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 )
 
@@ -19,7 +20,7 @@ func processRoom() error {
 	}
 
 	if staffCount < minAllowedCount || staffCount > maxAllowedCount {
-		return fmt.Errorf("invalid staff count: %d", staffCount)
+		return errors.New("invalid staff count")
 	}
 
 	currentMin := minAllowedTemp
@@ -44,7 +45,7 @@ func processRoom() error {
 				currentMax = temp
 			}
 		default:
-			return fmt.Errorf("invalid operator: %s", sign)
+			return errors.New("invalid operator")
 		}
 
 		if currentMin > currentMax {
