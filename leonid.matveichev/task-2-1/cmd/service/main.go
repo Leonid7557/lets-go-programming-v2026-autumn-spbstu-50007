@@ -68,17 +68,20 @@ func main() {
 
 	if _, err := fmt.Scan(&roomsCount); err != nil {
 		fmt.Println(err)
+
 		return
 	}
 
 	if roomsCount < minAllowedCount || roomsCount > maxAllowedCount {
 		fmt.Println("invalid rooms count")
+
 		return
 	}
 
 	for range roomsCount {
 		if err := processRoom(); err != nil {
 			fmt.Println(err)
+
 			return
 		}
 	}
