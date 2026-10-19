@@ -12,15 +12,20 @@ const (
 	maxAllowedCount = 1000
 )
 
+var (
+	errInvalidStaffCount = errors.New("invalid staff count")
+	errInvalidOperator   = errors.New("invalid operator")
+)
+
 func processRoom() error {
 	var staffCount int
 
 	if _, err := fmt.Scan(&staffCount); err != nil {
-		return fmt.Errorf("reading staff count: %w", err)
+		return fmt.Errorf("read staff count: %w", err)
 	}
 
 	if staffCount < minAllowedCount || staffCount > maxAllowedCount {
-		return errors.New("invalid staff count")
+		return errInvalidStaffCount
 	}
 
 	currentMin := minAllowedTemp
@@ -32,7 +37,7 @@ func processRoom() error {
 		var temp int
 
 		if _, err := fmt.Scan(&sign, &temp); err != nil {
-			return fmt.Errorf("reading temperature requirement: %w", err)
+			return fmt.Errorf("read temp requirement: %w", err)
 		}
 
 		switch sign {
@@ -45,7 +50,7 @@ func processRoom() error {
 				currentMax = temp
 			}
 		default:
-			return errors.New("invalid operator")
+			return errInvalidOperator
 		}
 
 		if currentMin > currentMax {
@@ -62,21 +67,18 @@ func main() {
 	var roomsCount int
 
 	if _, err := fmt.Scan(&roomsCount); err != nil {
-		fmt.Printf("reading rooms count: %s\n", err.Error())
-
+		fmt.Println(err)
 		return
 	}
 
 	if roomsCount < minAllowedCount || roomsCount > maxAllowedCount {
-		fmt.Printf("invalid rooms count: %d\n", roomsCount)
-
+		fmt.Println("invalid rooms count")
 		return
 	}
 
 	for range roomsCount {
 		if err := processRoom(); err != nil {
-			fmt.Println(err.Error())
-
+			fmt.Println(err)
 			return
 		}
 	}
