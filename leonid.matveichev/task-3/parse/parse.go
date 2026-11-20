@@ -12,7 +12,10 @@ import (
 	"golang.org/x/text/encoding/charmap"
 )
 
-var ErrEmptyRates = errors.New("no currencies found")
+var (
+	ErrEmptyRates     = errors.New("no currencies found")
+	errUnsupportedEnc = errors.New("unsupported encoding")
+)
 
 type Rate struct {
 	NumCode  int     `json:"num_code"`
@@ -36,6 +39,7 @@ func DecodeXML(path string) ([]Rate, error) {
 	if err != nil {
 		return nil, fmt.Errorf("parse.DecodeXML: %w", err)
 	}
+
 	defer func() { _ = file.Close() }()
 
 	decoder := xml.NewDecoder(file)
@@ -43,11 +47,10 @@ func DecodeXML(path string) ([]Rate, error) {
 		if strings.EqualFold(charset, "windows-1251") {
 			return charmap.Windows1251.NewDecoder().Reader(input), nil
 		}
-		return nil, fmt.Errorf("unsupported encoding: %s", charset)
+		return nil, fmt.Errorf("unsupported encoding %s: %w", charset, errUnsupportedEnc)
 	}
 
 	var root xmlRoot
-
 	if err := decoder.Decode(&root); err != nil {
 		return nil, fmt.Errorf("parse.DecodeXML: %w", err)
 	}
@@ -57,35 +60,25 @@ func DecodeXML(path string) ([]Rate, error) {
 	}
 
 	rates := make([]Rate, 0, len(root.Valutes))
-
-	for _, valute := range root.Valutes {
-		var numCode int
-
-		if valute.NumCode != "" {
-			var err error
-
-			numCode, err = strconv.Atoi(valute.NumCode)
-			if err != nil {
-				return nil, fmt.Errorf("parse.DecodeXML: %w", err)
+	for _, v := range root.Valutes {
+		numCode := 0
+		if v.NumCode != "" {
+			if n, err := strconv.Atoi(v.NumCode); err == nil {
+				numCode = n
 			}
 		}
 
-		valueStr := strings.ReplaceAll(valute.Value, ",", ".")
-
-		var value float64
-
-		if valueStr != "" {
-			var err error
-
-			value, err = strconv.ParseFloat(valueStr, 64)
-			if err != nil {
-				return nil, fmt.Errorf("parse.DecodeXML: %w", err)
+		value := 0.0
+		if v.Value != "" {
+			valueStr := strings.ReplaceAll(v.Value, ",", ".")
+			if f, err := strconv.ParseFloat(valueStr, 64); err == nil {
+				value = f
 			}
 		}
 
 		rates = append(rates, Rate{
 			NumCode:  numCode,
-			CharCode: strings.TrimSpace(valute.CharCode),
+			CharCode: strings.TrimSpace(v.CharCode),
 			Value:    value,
 		})
 	}
