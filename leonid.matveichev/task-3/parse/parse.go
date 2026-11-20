@@ -47,6 +47,7 @@ func DecodeXML(path string) ([]Rate, error) {
 		if strings.EqualFold(charset, "windows-1251") {
 			return charmap.Windows1251.NewDecoder().Reader(input), nil
 		}
+
 		return nil, fmt.Errorf("unsupported encoding %s: %w", charset, errUnsupportedEnc)
 	}
 
@@ -60,17 +61,20 @@ func DecodeXML(path string) ([]Rate, error) {
 	}
 
 	rates := make([]Rate, 0, len(root.Valutes))
-	for _, v := range root.Valutes {
+
+	for _, valute := range root.Valutes {
 		numCode := 0
-		if v.NumCode != "" {
-			if n, err := strconv.Atoi(v.NumCode); err == nil {
+
+		if valute.NumCode != "" {
+			if n, err := strconv.Atoi(valute.NumCode); err == nil {
 				numCode = n
 			}
 		}
 
 		value := 0.0
-		if v.Value != "" {
-			valueStr := strings.ReplaceAll(v.Value, ",", ".")
+
+		if valute.Value != "" {
+			valueStr := strings.ReplaceAll(valute.Value, ",", ".")
 			if f, err := strconv.ParseFloat(valueStr, 64); err == nil {
 				value = f
 			}
@@ -78,7 +82,7 @@ func DecodeXML(path string) ([]Rate, error) {
 
 		rates = append(rates, Rate{
 			NumCode:  numCode,
-			CharCode: strings.TrimSpace(v.CharCode),
+			CharCode: strings.TrimSpace(valute.CharCode),
 			Value:    value,
 		})
 	}
